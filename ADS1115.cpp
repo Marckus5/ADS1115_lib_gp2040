@@ -95,7 +95,7 @@ uint16_t ADS1115::readConversionResult() {
   return data16;
 }
 
-// NOTE This requires general call function
+// NOTE This requires general call function. Not used
 void ADS1115::reset() {
 }
 
