@@ -57,11 +57,23 @@ void ADS1115::setConfig(uint16_t config) {
   i2c->write(address, uc, 3);
 }
 
-// NOTE Read the config register
-uint8_t ADS1115::readRegister(ads1115AddressRegister_t reg) { // reg must be 0 or 1
-  uc[0] = ADS111X_CONFIG_REGISTER_ADDRESS;
-  i2c->write(address, uc, 1);
-  i2c->readRegister(address, ADS111X_CONFIG_REGISTER_ADDRESS, uc, 2);
+uint8_t ADS1115::readRegister8(ads1115AddressRegister_t reg) { // reg must be 0 or 1
+  // uc[0] = ADS111X_CONFIG_REGISTER_ADDRESS;
+  // i2c->write(address, uc, len);
+  i2c->readRegister(address, (uint8_t)reg, uc, 1);
+  
+  uint8_t data8 = uc[0];
+  return data8;
+}
+
+// for reading config or conversion data
+uint16_t ADS1115::readRegister16(ads1115AddressRegister_t reg) { // reg must be 0 or 1
+  // uc[0] = ADS111X_CONFIG_REGISTER_ADDRESS;
+  // i2c->write(address, uc, len);
+  i2c->readRegister(address, (uint8_t)reg, uc, 2);
+  
+  uint16_t data16 = (uc[0] << 8) | (uc[1]);
+  return data16;
 }
 
 // TODO 

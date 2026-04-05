@@ -191,7 +191,8 @@ public:
   void setChannel(int channel);
   void powerDown();
   void start();
-  uint8_t readRegister(ads1115AddressRegister_t reg);
+  uint8_t readRegister8(ads1115AddressRegister_t reg);
+  uint16_t readRegister16(ads1115AddressRegister_t reg);
   uint16_t readConversionResult();
 
   void setI2C(PeripheralI2C *i2cController) { this->i2c = i2cController; }

@@ -34,10 +34,12 @@ project(ADS1115 C CXX ASM)
 pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
+add_executable(ADS1115 examples/test.cpp)
 
-add_executable(ADS1115 examples/test.cpp )
+add_library(ADS1115_lib ADS1115.cpp)
 
-pico_set_program_name(ADS1115 "ADS1115")
+
+pico_set_program_name(ADS1115 "test")
 pico_set_program_version(ADS1115 "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
@@ -46,10 +48,11 @@ pico_enable_stdio_usb(ADS1115 0)
 
 add_subdirectory(lib/PicoPeripherals)
 
-# Add the standard library to the build
-target_link_libraries(ADS1115
-        PicoPeripherals
-        pico_stdlib)
+        
+target_link_libraries(ADS1115_lib 
+PicoPeripherals
+)
+
 
 # Add the standard include files to the build
 target_include_directories(ADS1115 PRIVATE
@@ -59,7 +62,9 @@ target_include_directories(ADS1115 PRIVATE
 # Add any user requested libraries
 target_link_libraries(ADS1115 
         hardware_i2c
-        )
+        PicoPeripherals
+        ADS1115_lib
+        pico_stdlib)
 
 pico_add_extra_outputs(ADS1115)
 
