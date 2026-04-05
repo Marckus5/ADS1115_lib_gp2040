@@ -4,6 +4,7 @@
 #include "peripheral_i2c.h"
 #include "pico/stdlib.h"
 #include <ADS1115.h>
+#include <sys/unistd.h>
 #include "hardware/i2c.h"
 
 // I2C defines
@@ -20,20 +21,39 @@ int main()
 {
     stdio_init_all();
 
-    
+    gpio_init(25);
+    gpio_set_dir(25, GPIO_OUT);
+    gpio_put(25, 1);
+
     PeripheralI2C i2c;
     i2c.setConfig(I2C_BLOCK, I2C_SDA, I2C_SCL, BAUD_RATE);
 
     ADS1115 ads(&i2c);
     
-    uint16_t config = ads.readRegister16(ads1115AddressRegister_t::CONFIG);
+    while (true) {
+    printf("Try:\n");
     
-    printf("Config: %04hx", config);
-    ads.setChannel(0);                         // Start on Channel 0
+    ads.resetConfig();
+    uint16_t config = ads.readRegister16(ads1115AddressRegister_t::CONFIG);
+    printf("Config: %04x\n", config);
+
+    ads.setChannel(2);                         // Start on Channel 2
     ads.setConversionMode(ads1115Mode_t::CONTINUOUS);         // Read analog continuously
     ads.setGain(ads1115Gain_t::ONE);                          // Set gain to 1
-    ads.setDataRate(1000);                     // 1mhz (1.1ms delay)
+    ads.setDataRate(32);                     // 1mhz (1.1ms delay)
+                                              
+    sleep_ms(2000);
+    gpio_put(25, 1);
 
+    // reread config
+    config = ads.readRegister16(ads1115AddressRegister_t::CONFIG);
+    printf("Config: %04x\n", config);
+    
+    printf("Data: %d \n", ads.readConversionResult());
+    
+    sleep_ms(2000);
+    gpio_put(25, 0);
+    }
 
     return 0;
     
